@@ -62,7 +62,6 @@ export default {
                     console.log('Response:', response);
                     console.log('Response Data:', response.data);
 
-                    $toast.success('Task created successfully');
                     // Emit the task-created event with the updated task data
                     this.$emit('task-deleted', this.taskId);
 

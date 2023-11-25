@@ -105,10 +105,6 @@
 import EditTask from './EditTask.vue';
 import DeleteTask from "./DeleteTask.vue";
 import axios from 'axios';
-import {useToast} from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
-
-const $toast = useToast();
 
 export default {
     // Define component properties
@@ -192,9 +188,17 @@ export default {
         },
         // Toggle the completion status of a task
         markTaskAsCompleted(task) {
-            task.completed = !task.completed;
-            this.$emit('fetch-completed-tasks');
-            console.log(this.showCompletedTasks);
+            // Create a copy of tasks before modifying
+            const updatedTasks = [...this.tasks];
+            const index = updatedTasks.findIndex(t => t.id === task.id);
+            if (index !== -1) {
+                updatedTasks[index].completed = !task.completed;
+                this.$emit('fetch-completed-tasks');
+                console.log(this.showCompletedTasks);
+
+                // Update the tasks prop
+                this.$emit('update:tasks', updatedTasks);
+            }
         },
         // Show or hide task details
         showTaskDetails(task) {
@@ -217,22 +221,28 @@ export default {
         },
         // Handle task creation or update
         handleTaskCreated(updatedTask) {
-            const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+            // Create a copy of tasks before modifying
+            const updatedTasks = [...this.tasks];
+            const index = updatedTasks.findIndex(t => t.id === updatedTask.id);
             if (index !== -1) {
-                this.tasks[index] = updatedTask;
+                updatedTasks[index] = updatedTask;
+                this.showTask();
+
+                // Update the tasks prop
+                this.$emit('update:tasks', updatedTasks);
             }
-            this.showTask();
-            this.$toast.open({
-                message: 'Something went wrong!',
-                type: 'success',
-            });
-            },
+        },
         // Handle task deletion
         handleTaskDeleted(deletedTaskId) {
-            const index = this.tasks.findIndex(task => task.id === deletedTaskId);
+            // Create a copy of tasks before modifying
+            const updatedTasks = [...this.tasks];
+            const index = updatedTasks.findIndex(t => t.id === deletedTaskId);
             if (index !== -1) {
-                this.tasks.splice(index, 1);
+                updatedTasks.splice(index, 1);
                 this.selectedTask = null;
+
+                // Update the tasks prop
+                this.$emit('update:tasks', updatedTasks);
             }
         },
         // Toggle completion status using API
@@ -256,9 +266,14 @@ export default {
                     this.playCompletionSound();
                     this.selectedTask = null;
 
-                    const index = this.tasks.findIndex(t => t.id === task.id);
+                    // Create a copy of tasks before modifying
+                    const updatedTasks = [...this.tasks];
+                    const index = updatedTasks.findIndex(t => t.id === task.id);
                     if (index !== -1) {
-                        this.tasks.splice(index, 1);
+                        updatedTasks.splice(index, 1);
+
+                        // Update the tasks prop
+                        this.$emit('update:tasks', updatedTasks);
                     }
                 })
                 .catch(error => {
