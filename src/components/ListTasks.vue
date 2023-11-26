@@ -221,29 +221,22 @@ export default {
         },
         // Handle task creation or update
         handleTaskCreated(updatedTask) {
-            // Create a copy of tasks before modifying
-            const updatedTasks = [...this.tasks];
-            const index = updatedTasks.findIndex(t => t.id === updatedTask.id);
+            const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+            const tasks = this.tasks
             if (index !== -1) {
-                updatedTasks[index] = updatedTask;
-                this.showTask();
-
-                // Update the tasks prop
-                this.$emit('update:tasks', updatedTasks);
+                tasks[index] = updatedTask;
             }
+            this.showTask();
         },
         // Handle task deletion
         handleTaskDeleted(deletedTaskId) {
-            // Create a copy of tasks before modifying
-            const updatedTasks = [...this.tasks];
-            const index = updatedTasks.findIndex(t => t.id === deletedTaskId);
+            const index = this.tasks.findIndex(task => task.id === deletedTaskId);
+            const tasks = this.tasks
             if (index !== -1) {
-                updatedTasks.splice(index, 1);
+                tasks.splice(index, 1);
                 this.selectedTask = null;
-
-                // Update the tasks prop
-                this.$emit('update:tasks', updatedTasks);
             }
+            this.toast.success('Task deleted successfully');
         },
         // Toggle completion status using API
         toggleTaskCompletion(task) {
@@ -263,17 +256,13 @@ export default {
                 .then(response => {
                     console.log('Response:', response);
                     console.log('Response Data:', response.data);
+                    const tasks = this.tasks
                     this.playCompletionSound();
                     this.selectedTask = null;
 
-                    // Create a copy of tasks before modifying
-                    const updatedTasks = [...this.tasks];
-                    const index = updatedTasks.findIndex(t => t.id === task.id);
+                    const index = this.tasks.findIndex(t => t.id === task.id);
                     if (index !== -1) {
-                        updatedTasks.splice(index, 1);
-
-                        // Update the tasks prop
-                        this.$emit('update:tasks', updatedTasks);
+                        tasks.splice(index, 1);
                     }
                 })
                 .catch(error => {
