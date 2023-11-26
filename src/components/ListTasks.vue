@@ -172,7 +172,7 @@ export default {
         // Check if a task is created today
         isTodayTask(task) {
             console.log('methods ' + this.showTodayTasks);
-            if (this.showTodayTasks === 0) {
+            if (this.showTodayTasks === 0 ) {
                 console.log(this.showTodayTasks);
                 return true;
             }
