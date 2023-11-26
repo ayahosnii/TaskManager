@@ -27,6 +27,6 @@
 <script src="{{asset('assets/libs/apexcharts/dist/apexcharts.min.js')}}"></script>
 <script src="{{asset('assets/libs/simplebar/dist/simplebar.js')}}"></script>
 <script src="{{asset('assets/js/dashboard.js')}}"></script>
-@vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/vue-task-manager/src/main.js'])
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 </body>
 </html>
