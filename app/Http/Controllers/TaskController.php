@@ -27,10 +27,12 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         try {
-            $task = Task::create([
-                'title' => $request->input('title'),
-                'description' => $request->input('description'),
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|max:100',
             ]);
+
+            $task = Task::create($validatedData);
 
             return response()->json($task, 201);
         } catch (\Exception $exception) {
@@ -38,17 +40,16 @@ class TaskController extends Controller
             Log::error('Exception Message: ' . $exception->getMessage());
             Log::error('Exception Trace: ' . $exception->getTraceAsString());
 
-            return response()->json($exception->getMessage());
+            return response()->json($exception->getMessage(), 500);
         }
     }
-
 
 
     public function update(Request $request, Task $task)
     {
         $request->validate([
             'title' => 'required',
-            'description' => 'nullable|max:255',
+            'description' => 'nullable|max:100',
             'completed' => 'boolean',
         ]);
 
